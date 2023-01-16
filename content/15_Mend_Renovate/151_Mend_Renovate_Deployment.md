@@ -83,7 +83,7 @@ For syntax reference and more information on build specification (buildspec) fil
 
 To integrate **Mend Renovate** with **AWS CodeBuild**, you'll need to update your build specification (`buildspec.yml`) file.  
 
-If the file doesn't exist, create it under your project's root directory (if you do not have committer access to the source repo, you can also use the CodeBuild console to paste build commands manually).  
+If the file doesn't exist, create it under your project's root directory (if you do not have committer access to the source repo, you can also use the CodeBuild console to add build commands manually).  
 
 ![Update build specification](/images/mend-renovate/mend-renovate-update-buildspec.png)
 
@@ -111,14 +111,14 @@ This number can be changed by adding the environment variable `RENOVATE_PR_COMMI
 Instead of specifying the repositories to scan (`RENOVATE_REPOSITORIES`), you can also utilize the [autodiscover]([autodiscover](https://docs.renovatebot.com/self-hosted-configuration/#autodiscover)) feature.  
 
 {{% /notice %}}
-
+<!-- ToDo - change these snippets to `importcode` shortcodes -->
 ```yaml
 env:
   shell: bash
   variables:
     RENOVATE_ENDPOINT: "https://git-codecommit.us-east-1.amazonaws.com/"
     RENOVATE_PLATFORM: "codecommit"
-    RENOVATE_REPOSITORIES: ['easybuggy']
+    RENOVATE_REPOSITORIES: 'easybuggy'
     RENOVATE_CONFIG: '{"onboardingConfig":{"extends":["config:base"]}}'
   exported-variables:
     - AWS_REGION

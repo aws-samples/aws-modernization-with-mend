@@ -51,10 +51,10 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
 
-  MyAppImage:
+  AppImage:
     Type: AWS::ECR::Repository
 
-  MyAppRepo:
+  AppRepo:
     Type: AWS::CodeCommit::Repository
     Properties:
       RepositoryName: !Ref AppRepositoryName
@@ -152,12 +152,12 @@ Resources:
             Value: !Ref AWS::AccountId
             Type: PLAINTEXT
           - Name: REPOSITORY_URI
-            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${MyAppImage}
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${AppImage}
             Type: PLAINTEXT
       Name: !Ref AppCodeBuildProjectName
       ServiceRole: !Ref CodePipelineServiceRole
 
-  MyAppPipeline:
+  AppPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       ArtifactStore:
@@ -229,7 +229,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: codepipeline:StartPipelineExecution
-                Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${MyAppPipeline}
+                Resource: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${AppPipeline}
 
   RenovateCodeBuildServiceRole:
     Type: AWS::IAM::Role
@@ -368,7 +368,7 @@ Resources:
                 Action:
                   - ecr:*
                 Resource:
-                  - !GetAtt MyAppImage.Arn
+                  - !GetAtt AppImage.Arn
               - Effect: Allow
                 Action:
                   - lambda:InvokeFunction

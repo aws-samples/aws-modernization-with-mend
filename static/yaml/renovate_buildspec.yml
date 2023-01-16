@@ -1,0 +1,18 @@
+version: 0.2
+
+env:
+  shell: bash
+  git-credential-helper: yes
+  variables:
+    RENOVATE_ENDPOINT: "https://git-codecommit.es-east-1.amazonaws.com/"
+    RENOVATE_PLATFORM: "codecommit"
+    RENOVATE_REPOSITORIES: 'easybuggy'
+    RENOVATE_CONFIG: '{"onboardingConfig":{"extends":["config:base"]}}'
+  exported-variables:
+    - AWS_REGION
+    
+phases:
+  build:
+    on-failure: CONTINUE
+    commands:
+      - docker run --rm -e AWS_REGION -e RENOVATE_CONFIG -e RENOVATE_ENDPOINT -e RENOVATE_PLATFORM -e RENOVATE_REPOSITORIES renovate/renovate

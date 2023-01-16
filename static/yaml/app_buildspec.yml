@@ -1,0 +1,44 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    WS_WSS_URL: "https://saas.mend.io/agent"
+  secrets-manager:
+    WS_APIKEY: "Mend:WS_APIKEY"
+    WS_USERKEY: "Mend:WS_USERKEY"
+  exported-variables:
+    - AWS_REGION
+    - CODEBUILD_BUILD_ID
+    - CODEBUILD_INITIATOR
+    
+phases:
+  pre_build:
+    on-failure: CONTINUE
+    commands:
+      - echo "Log in to Amazon ECR"
+      - REPOSITORY_URI=$REPOSITORY_URI 
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Download Mend Unified Agent
+      - curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+  build:
+    on-failure: ABORT
+    commands:
+      - echo "============="
+      - echo "Maven Install"
+      - mvn clean install
+      - echo "========"
+      - echo "Mend SCA"
+      - export WS_PRODUCTNAME=AWS_$AWS_REGION-$CODEBUILD_INITIATOR
+      - export WS_PROJECTNAME=$CODEBUILD_BUILD_ID
+      - java -jar wss-unified-agent.jar
+      - echo "=================="
+      - echo "Build Docker image"
+      - docker build -t $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker tag $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION $REPOSITORY_URI:latest
+  post_build:
+    on-failure: CONTINUE
+    commands:
+      - echo "Build completed"
+      - echo "Push image"
+      - docker push $REPOSITORY_URI:latest

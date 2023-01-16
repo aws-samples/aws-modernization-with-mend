@@ -21,7 +21,7 @@ If the file doesn't exist, create it under your project's root directory (if you
 #### Build Environment
 ##### Mandatory Parameters
 Add the following variables to the buildspec's `env` section:  
-
+<!-- ToDo - replace these hard-coded snippets with the `importcode` shortcode (like in "content/2_Prerequisites/30_self_paced/15_explore_AWS_account.md", line 17) -->
 | Variable | Description |
 |:----|:----|
 | `WS_WSS_URL` | Your Mend organization server URL, suffixed with the `/agent` endpoint |
