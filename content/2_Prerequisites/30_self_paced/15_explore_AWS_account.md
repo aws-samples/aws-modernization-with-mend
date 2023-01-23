@@ -14,21 +14,21 @@ TBD: Add reference architecture and short description for each service
 So let's review what we are deploying:
 
 - CodeCommit repository to host the application code
-{{< importcode "../../static/CFN_Template.yml" 57 10 "yaml">}}
+{{< importcode "../../static/yaml/CFN_MendWorkshop.yml" 57 10 "yaml">}}
 
 - CodeBuild project to run Docker and push the container image to ECR
-{{< importcode "../../static/CFN_Template.yml" 131 21 "yaml">}}
+{{< importcode "../../static/yaml/CFN_MendWorkshop.yml" 137 21 "yaml">}}
 
 - CodePipeline pointing to our CodeCommit repository and performing our CodeBuild and CodeDeploy actions
-{{< importcode "../../static/CFN_Template.yml" 154 37 "yaml">}}
+{{< importcode "../../static/yaml/CFN_MendWorkshop.yml" 160 37 "yaml">}}
 
 - Since CodePipeline does not automatically create this for you as part of creation, but this role is for the CWE Hook to trigger CodePipeline once there's an update in CodeCommit. Otherwise, we have to have a CodePipeline pool for changes, which is slower.
-{{< importcode "../../static/CFN_Template.yml" 209 19 "yaml">}}
+{{< importcode "../../static/yaml/CFN_MendWorkshop.yml" 213 19 "yaml">}}
 
 
 ### Get familiar with CodeCommit and CodeBuild configuration
 Let's take a close look at the Buildspec.yml structure - the configuration file for CodeBuild
-{{< importcode "../../static/buildspec.yml" 0 25 "yaml">}}
+{{< importcode "../../static/yaml/app_buildspec.yml" 0 44 "yaml">}}
 
 ### Let's do it! Deploying changes to your AWS account
 

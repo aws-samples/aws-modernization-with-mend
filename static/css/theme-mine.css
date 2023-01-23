@@ -39,6 +39,7 @@
 
 body {
     color: var(--MAIN-TEXT-color) !important;
+    font-size: 1.2rem !important;
 }
 
 textarea:focus,
@@ -216,6 +217,44 @@ i.mend-icon {
     display: inline-block;
 }
 
+table.mend-table {
+    /* width: 600px; */
+    width: 100%;
+    border: 1px;
+    border-color: #000;
+    border-collapse: collapse;
+}
+
+tr.mend-table-row {
+    height: 60px;
+}
+
+td.mend-table-label {
+    /* width: auto; */
+    /* min-width: 100px; */
+    max-width: 50px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+td.mend-table-value {
+    width: auto;
+}
+
+input.mend-table-input {
+    width: 100%;
+    margin: 0;
+}
+
+span.mend-input-span {
+    width: 100px;
+}
+
+label.mend-input {
+    text-align: left;
+    float: left !important;
+    margin-right: 15px !important;
+}
 i.github-icon {
     background: url("../images/github-logo-white.png");
     background-size: 16px;
