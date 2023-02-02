@@ -15,7 +15,7 @@ To obtain your access credentials, please **[register here](https://www.mend.io/
 
 ![](/images/10_prerequisites/mend_user_account.png)
 
-Following your registration you will receive an email with the API Key and User Key.
+Following your registration you will receive an email with the API Key, User Key and Product Token.
 
 Please save these keys, they will be required when setting up the integration during the workshop.
 Both keys are valid for 7 days, after which the account and all your data will be removed from the system and your access will be blocked.

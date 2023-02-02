@@ -15,8 +15,8 @@ To deploy Mend Renovate for repositories other than CodeCommit, please refer to 
 {{% /notice %}}
 
 {{% notice tip %}}
-The need to run **Mend Renovate** to periodically check for new package versions is not correlated with the number of commits (and therefore pipelines jobs) you have in your repository.  
-It is recommended to execute **Mend Renovate** as a scheduled task from a central, dedicated CodeBuild project, so you don't have to configure it for each repository individually.  
+The need to run Mend Renovate to check for new package versions periodically is not correlated with the number of commits (and therefore pipelines jobs) you have in your repository.
+It is recommended to execute Mend Renovate as a scheduled task from a central, dedicated CodeBuild project, so you don’t have to configure it for each repository individually.It is recommended to execute **Mend Renovate** as a scheduled task from a central, dedicated CodeBuild project, so you don't have to configure it for each repository individually.  
 {{% /notice %}}
 
 <!-- ### Get AWS IAM Credentials
@@ -75,28 +75,26 @@ In the **Build commands** box, insert the following:
 Click **Create build project**   -->
 
 
-### Build Specification
+#### **Build Specification**
 
 {{% notice info %}}
 For syntax reference and more information on build specification (buildspec) files, refer to [Build specification reference for CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html) under AWS CodeBuild User Guide.
 {{% /notice %}}
 
-To integrate **Mend Renovate** with **AWS CodeBuild**, you'll need to update your build specification (`buildspec.yml`) file.  
+To integrate **Mend Renovate** with **AWS CodeBuild**, you'll need to update your existing build specification (`buildspec.yml`) file, which is placed in the root of your source directory. Go to the easybuggy CodeCommit repository and edit buildspec.yml. If you do not have committer access to the source repo, you can also use the CodeBuild console to insert build commands manually).
 
-If the file doesn't exist, create it under your project's root directory (if you do not have committer access to the source repo, you can also use the CodeBuild console to add build commands manually).  
+![Update build specification](/images/mend-sca/mend-sca-update-buildspec.png)
 
-![Update build specification](/images/mend-renovate/mend-renovate-update-buildspec.png)
-
-#### Build Environment
+#### **Build Environment**
 Add the following variables to the buildspec's `env` section:
 
-| Variable | Description | Value |
-|:----|:----|:----|
-| `RENOVATE_ENDPOINT` | Repository endpoint URL | `https://git-codecommit.us-east-1.amazonaws.com` |
-| `RENOVATE_PLATFORM` | Repository platform type (see [supported platforms](https://docs.renovatebot.com/modules/platform/)) | `codecommit` |
-| `RENOVATE_REPOSITORIES` | A list of repository names to scan | `['repo1', 'repo2']` |
-| `RENOVATE_CONFIG` | Renovate recommended configuration (see [full reference](https://docs.renovatebot.com/self-hosted-configuration/)) | `'{"onboardingConfig": {"extends":` `["config:base"]}}'` |
-| `AWS_REGION` | AWS region | `us-east-1` |
+| Variable                | Description                                                                                                        | Value                                                    |
+|:------------------------|:-------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------|
+| `RENOVATE_ENDPOINT`     | Repository endpoint URL                                                                                            | `https://git-codecommit.us-east-1.amazonaws.com`         |
+| `RENOVATE_PLATFORM`     | Repository platform type (see [supported platforms](https://docs.renovatebot.com/modules/platform/))               | `codecommit`                                             |
+| `RENOVATE_REPOSITORIES` | A list of repository names to scan                                                                                 | `['repo1', 'repo2']`                                     |
+| `RENOVATE_CONFIG`       | Renovate recommended configuration (see [full reference](https://docs.renovatebot.com/self-hosted-configuration/)) | `'{"onboardingConfig": {"extends":` `["config:base"]}}'` |
+| `AWS_REGION`            | AWS region                                                                                                         | `us-east-1`                                              |
 
 {{% notice tip %}}
 The variable `AWS_REGION` is a built-in AWS environment variable, so there's no need to specify it, you can simply use the `exported-variables` node to use its value.  
@@ -110,33 +108,12 @@ This number can be changed by adding the environment variable `RENOVATE_PR_COMMI
 {{% notice tip %}}
 Instead of specifying the repositories to scan (`RENOVATE_REPOSITORIES`), you can also utilize the [autodiscover]([autodiscover](https://docs.renovatebot.com/self-hosted-configuration/#autodiscover)) feature.  
 
-{{% /notice %}}
-<!-- ToDo - change these snippets to `importcode` shortcodes -->
-```yaml
-env:
-  shell: bash
-  variables:
-    RENOVATE_ENDPOINT: "https://git-codecommit.us-east-1.amazonaws.com/"
-    RENOVATE_PLATFORM: "codecommit"
-    RENOVATE_REPOSITORIES: 'easybuggy'
-    RENOVATE_CONFIG: '{"onboardingConfig":{"extends":["config:base"]}}'
-  exported-variables:
-    - AWS_REGION
-```
+{{< importcode "../static/yaml/renovate_buildspec.yml" 2 10 "yaml">}}
 
-#### Build Phases
+#### **Build Phases**
 Add the following to the `build` phase to execute the [Mend Renovate]():
 
-```yaml
-phases:
-  build:
-    on-failure: CONTINUE
-    commands:
-      - docker run --rm -e AWS_REGION -e RENOVATE_CONFIG -e RENOVATE_ENDPOINT -e RENOVATE_PLATFORM -e RENOVATE_REPOSITORIES renovate/renovate
-```
-
-
-
+{{< importcode "../static/yaml/renovate_buildspec.yml" 13 6 "yaml">}}
 
 
 <!-- ### Attach IAM Security Policies
