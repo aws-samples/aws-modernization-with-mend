@@ -4,13 +4,16 @@ env:
   shell: bash
   variables:
     WS_WSS_URL: "https://saas.mend.io/agent"
+    WS_SCANCOMMENT: $CODEBUILD_INITIATOR $CODEBUILD_RESOLVED_SOURCE_VERSION
   secrets-manager:
     WS_APIKEY: "Mend:WS_APIKEY"
     WS_USERKEY: "Mend:WS_USERKEY"
+    WS_PRODUCTTOKEN: "Mend:WS_PRODUCTTOKEN"
   exported-variables:
     - AWS_REGION
     - CODEBUILD_BUILD_ID
     - CODEBUILD_INITIATOR
+    - CODEBUILD_RESOLVED_SOURCE_VERSION
     
 phases:
   pre_build:
@@ -29,8 +32,7 @@ phases:
       - mvn clean install
       - echo "========"
       - echo "Mend SCA"
-      - export WS_PRODUCTNAME=AWS_$AWS_REGION-$CODEBUILD_INITIATOR
-      - export WS_PROJECTNAME=$CODEBUILD_BUILD_ID
+      - export WS_PROJECTNAME=${CODEBUILD_BUILD_ID%:*}
       - java -jar wss-unified-agent.jar
       - echo "=================="
       - echo "Build Docker image"
